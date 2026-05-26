@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Urban Jungle</title>
-    <meta name="theme-color" content="#1c2128">
+    <meta name="theme-color" content="#f4efe6">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Urban Jungle">
@@ -18,26 +18,17 @@
     
     <style>
         :root {
-            --bg: #1c2128;
-            --surface: #252b34;
-            --surface-raised: #2d3540;
-            --text: #e8ecf1;
-            --text-muted: #8b95a3;
             --accent-cyan: #3dd6f5;
             --accent-cyan-dim: #2a9fb8;
             --accent-warm: #e07a5f;
             --accent-warm-dim: #b85a44;
-            --leaf: #6bcf8e;
-            --neo-light: rgba(255, 255, 255, 0.06);
-            --neo-dark: rgba(0, 0, 0, 0.45);
+            --leaf: #557a61;
             --glow-cyan: 0 0 12px rgba(61, 214, 245, 0.45);
             --glow-warm: 0 0 14px rgba(224, 122, 95, 0.5);
             --radius-sm: 12px;
             --radius-md: 16px;
             --radius-lg: 22px;
-            /* legacy aliases */
-            --cream: var(--text);
-            --dark-green: var(--bg);
+            --nav-green: #121a14;
             --orange: var(--accent-warm);
             --water-blue: var(--accent-cyan);
         }
@@ -45,13 +36,35 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
         body {
+            --bg: #f4efe6;
+            --surface: #f4efe6;
+            --surface-raised: #faf7f2;
+            --text: #121a14;
+            --text-muted: #6b756c;
+            --neo-light: #ffffff;
+            --neo-dark: #c9c2b5;
+            --cream: #f4efe6;
+            --dark-green: #121a14;
             font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            background: radial-gradient(ellipse 120% 80% at 50% -20%, #2a3340 0%, var(--bg) 55%);
+            background: linear-gradient(145deg, #faf8f4 0%, var(--bg) 40%, #ebe5da 100%);
             color: var(--text);
             display: flex;
             justify-content: center;
             min-height: 100vh;
             overflow-x: hidden;
+            transition: background 0.35s ease, color 0.35s ease;
+        }
+
+        body.admin-mode {
+            --bg: #152019;
+            --surface: #1a2e22;
+            --surface-raised: #1e3528;
+            --text: #e8ecf1;
+            --text-muted: #8fa896;
+            --neo-light: rgba(255, 255, 255, 0.07);
+            --neo-dark: rgba(0, 0, 0, 0.5);
+            --cream: #f4efe6;
+            background: linear-gradient(145deg, #243d2e 0%, #152019 38%, #0d1611 100%);
         }
 
         .phone-container {
@@ -431,38 +444,65 @@
             color: var(--text-muted);
         }
 
+        body.admin-mode #view-zadavani label { color: rgba(244, 239, 230, 0.65); }
+
         .text-input-sand {
             width: 100%;
             border: none;
             outline: none;
             padding: 16px 18px;
             border-radius: var(--radius-md);
-            background: var(--surface);
-            color: var(--text);
             font-weight: 600;
             font-size: 15px;
             font-family: inherit;
-            box-shadow: inset 5px 5px 12px var(--neo-dark), inset -3px -3px 8px var(--neo-light);
         }
-        .text-input-sand::placeholder { color: var(--text-muted); opacity: 0.6; }
+        body.admin-mode .text-input-sand {
+            background: #f4efe6 !important;
+            color: #121a14 !important;
+            box-shadow: inset 5px 5px 12px rgba(0, 0, 0, 0.28), inset -3px -3px 8px rgba(255, 255, 255, 0.85) !important;
+        }
+        body.admin-mode .text-input-sand::placeholder { color: #8a948d; }
 
         .admin-sand-btn, .room-node-sand, .interval-bead-sand {
-            background: var(--surface-raised) !important;
-            color: var(--text-muted) !important;
-            border: 1px solid rgba(255, 255, 255, 0.04);
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            border: 1px solid rgba(0, 0, 0, 0.12);
             border-radius: var(--radius-md);
-            padding: 14px;
+            padding: 14px 10px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 5px 5px 12px var(--neo-dark), -3px -3px 8px var(--neo-light) !important;
         }
-        .admin-sand-btn.selected-orange,
-        .room-node-sand.selected-orange,
-        .interval-bead-sand.selected-orange {
-            color: var(--bg) !important;
-            background: linear-gradient(145deg, var(--accent-warm), var(--accent-warm-dim)) !important;
-            box-shadow: var(--glow-warm), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+        body.admin-mode .admin-sand-btn,
+        body.admin-mode .room-node-sand,
+        body.admin-mode .interval-bead-sand {
+            background: #1c281f !important;
+            color: #a49e93 !important;
+            box-shadow: 5px 5px 12px rgba(0, 0, 0, 0.45), -3px -3px 8px rgba(255, 255, 255, 0.04) !important;
+        }
+        body.admin-mode .admin-sand-btn.selected-orange,
+        body.admin-mode .room-node-sand.selected-orange,
+        body.admin-mode .interval-bead-sand.selected-orange {
+            color: var(--accent-warm) !important;
+            background: #101712 !important;
+            box-shadow: inset 4px 4px 10px rgba(0, 0, 0, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.05) !important;
+        }
+
+        body.admin-mode .switcher-row {
+            background: #0f1812;
+            box-shadow: inset 5px 5px 12px rgba(0, 0, 0, 0.45), inset -2px -2px 6px rgba(255, 255, 255, 0.04);
+        }
+        body.admin-mode .switcher-row .space-btn.active {
+            color: #121a14;
+        }
+        body.admin-mode .admin-submit-btn {
+            width: 100%;
+            margin-top: 20px;
+            font-size: 16px;
+            color: var(--accent-warm) !important;
+            border: 1px solid rgba(224, 122, 95, 0.35) !important;
         }
 
         .snake-layout {
@@ -538,25 +578,32 @@
         }
         .nav-tab.active { color: var(--accent-cyan); }
         .nav-tab.active i {
-            transform: translateY(-18px) scale(1.05);
-            width: 48px;
-            height: 48px;
+            transform: translateY(-12px) scale(1.02);
+            width: 46px;
+            height: 46px;
             display: flex;
             align-items: center;
             justify-content: center;
             border-radius: 50%;
-            color: var(--bg);
-            background: linear-gradient(145deg, var(--accent-cyan), var(--accent-cyan-dim));
-            box-shadow: var(--glow-cyan), 0 8px 20px rgba(0, 0, 0, 0.35);
+            color: var(--cream);
+            background: radial-gradient(circle at 35% 35%, #6a8f72, var(--nav-green));
+            box-shadow: 0 5px 14px rgba(0, 0, 0, 0.35), inset 2px 2px 4px rgba(255, 255, 255, 0.25);
         }
+        .nav-tab.active span { opacity: 0; height: 0; margin: 0; overflow: hidden; }
 
+        body:not(.admin-mode) .nav-svg-bg { fill: var(--nav-green); }
+        body:not(.admin-mode) .nav-tab { color: #617568; }
+        body:not(.admin-mode) .nav-tab.active { color: var(--cream); }
+
+        .nav-dock[data-active="souhrn"] .nav-svg-bg { clip-path: url(#clip-souhrn); }
         .nav-dock[data-active="prehled"] .nav-svg-bg { clip-path: url(#clip-prehled); }
         .nav-dock[data-active="kalendar"] .nav-svg-bg { clip-path: url(#clip-kalendar); }
         .nav-dock[data-active="zadavani"] .nav-svg-bg { clip-path: url(#clip-zadavani); }
 
         body.admin-mode .nav-tab.active i {
-            background: linear-gradient(145deg, var(--accent-warm), var(--accent-warm-dim));
-            box-shadow: var(--glow-warm), 0 8px 20px rgba(0, 0, 0, 0.35);
+            background: radial-gradient(circle at 35% 35%, #e8a090, var(--accent-warm-dim));
+            color: #fff;
+            box-shadow: var(--glow-warm), 0 5px 14px rgba(0, 0, 0, 0.35);
         }
         body.admin-mode .nav-tab.active { color: var(--accent-warm); }
 
@@ -628,15 +675,102 @@
         }
         .notif-status { font-size: 12px; color: var(--leaf); margin-top: 8px; }
         .notif-status.warn { color: var(--accent-warm); }
+
+        /* --- Úvodní souhrn --- */
+        #view-souhrn {
+            flex: 1;
+            cursor: pointer;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 8px 0 24px;
+            min-height: 58vh;
+        }
+        .souhrn-inner { width: 100%; pointer-events: none; }
+        .souhrn-label {
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+        .souhrn-droplet-wrap {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 42px;
+            color: #fff;
+            background: radial-gradient(circle at 35% 30%, #ffbc9e, var(--accent-warm));
+            box-shadow: var(--glow-warm), 8px 10px 24px var(--neo-dark), -4px -4px 12px var(--neo-light);
+        }
+        .souhrn-droplet-wrap.all-done {
+            background: radial-gradient(circle at 35% 30%, #9ecaff, var(--accent-cyan));
+            box-shadow: var(--glow-cyan), 8px 10px 24px var(--neo-dark);
+        }
+        .souhrn-count {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1;
+            letter-spacing: -0.04em;
+            color: var(--text);
+            margin-bottom: 8px;
+        }
+        .souhrn-count span { color: var(--accent-warm); }
+        .souhrn-sub {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--text-muted);
+            line-height: 1.45;
+            margin-bottom: 28px;
+            padding: 0 12px;
+        }
+        .souhrn-breakdown {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 32px;
+        }
+        .souhrn-pill {
+            min-width: 130px;
+            padding: 16px 20px;
+            border-radius: var(--radius-lg);
+            background: var(--surface-raised);
+            box-shadow: 6px 6px 14px var(--neo-dark), -4px -4px 10px var(--neo-light);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .souhrn-pill strong {
+            display: block;
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text);
+            margin-top: 6px;
+        }
+        .souhrn-pill strong.warm { color: var(--accent-warm); }
+        .souhrn-hint {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--leaf);
+            opacity: 0.85;
+        }
+        .form-group { margin-bottom: 4px; }
     </style>
 </head>
-<body data-active-tab="prehled">
+<body data-active-tab="souhrn">
 
     <svg width="0" height="0" style="position: absolute;">
         <defs>
-            <clipPath id="clip-prehled" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.05,0 C 0.11,0 0.11,0.45 0.17,0.45 C 0.23,0.45 0.23,0 0.29,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
-            <clipPath id="clip-kalendar" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.38,0 C 0.44,0 0.44,0.45 0.50,0.45 C 0.56,0.45 0.56,0 0.62,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
-            <clipPath id="clip-zadavani" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.71,0 C 0.77,0 0.77,0.45 0.83,0.45 C 0.89,0.45 0.89,0 0.95,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
+            <clipPath id="clip-souhrn" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.065,0 C 0.095,0 0.095,0.2 0.125,0.2 C 0.155,0.2 0.155,0 0.185,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
+            <clipPath id="clip-prehled" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.315,0 C 0.345,0 0.345,0.2 0.375,0.2 C 0.405,0.2 0.405,0 0.435,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
+            <clipPath id="clip-kalendar" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.565,0 C 0.595,0 0.595,0.2 0.625,0.2 C 0.655,0.2 0.655,0 0.685,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
+            <clipPath id="clip-zadavani" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.815,0 C 0.845,0 0.845,0.2 0.875,0.2 C 0.905,0.2 0.905,0 0.935,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
         </defs>
     </svg>
 
@@ -680,7 +814,21 @@
             </div>
         </div>
 
-        <div id="view-prehled" class="page active">
+        <div id="view-souhrn" class="page active" onclick="navigateTo('kalendar')" role="button" tabindex="0">
+            <div class="souhrn-inner">
+                <p class="souhrn-label">Dnešní zalévání</p>
+                <div class="souhrn-droplet-wrap" id="souhrn-droplet"><i class="fa-solid fa-droplet"></i></div>
+                <div class="souhrn-count" id="souhrn-count-line">—</div>
+                <p class="souhrn-sub" id="souhrn-sub">načítám…</p>
+                <div class="souhrn-breakdown">
+                    <div class="souhrn-pill">Doma<strong id="souhrn-doma" class="warm">0</strong></div>
+                    <div class="souhrn-pill">Zahrada<strong id="souhrn-zahrada" class="warm">0</strong></div>
+                </div>
+                <p class="souhrn-hint">Klepni kamkoliv pro plán zalévání →</p>
+            </div>
+        </div>
+
+        <div id="view-prehled" class="page">
             <div class="page-title-row"><div class="page-title">Moje zelená džungle</div></div>
             <div class="plant-grid-2col" id="grid-prehled"></div>
         </div>
@@ -751,16 +899,17 @@
                         <div class="interval-train" id="interval-beads-row"></div>
                     </div>
                 </div>
-                <button type="submit" class="neo-btn admin-sand-btn" style="width: 100%; margin-top: 20px; font-weight: 800; font-size:16px; border: 1px solid rgba(224,122,95,0.3); color: var(--orange) !important;">Uložit do inventáře</button>
+                <button type="submit" class="neo-btn admin-sand-btn admin-submit-btn">Uložit do inventáře</button>
             </form>
         </div>
 
-        <div class="nav-dock" id="bottom-dock" data-active="prehled">
+        <div class="nav-dock" id="bottom-dock" data-active="souhrn">
             <svg class="nav-svg-bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100"/></svg>
             <div class="nav-interactive-layer">
-                <div class="nav-tab active" id="tab-prehled" onclick="navigateTo('prehled')"><i class="fa-solid fa-house"></i><span>Přehled</span></div>
-                <div class="nav-tab" id="tab-kalendar" onclick="navigateTo('kalendar')"><i class="fa-solid fa-calendar-days"></i><span>Kalendář</span></div>
-                <div class="nav-tab" id="tab-zadavani" onclick="navigateTo('zadavani')"><i class="fa-solid fa-plus"></i><span>Zadávání</span></div>
+                <div class="nav-tab active" id="tab-souhrn" onclick="event.stopPropagation(); navigateTo('souhrn')"><i class="fa-solid fa-house"></i><span>Domů</span></div>
+                <div class="nav-tab" id="tab-prehled" onclick="event.stopPropagation(); navigateTo('prehled')"><i class="fa-solid fa-leaf"></i><span>Přehled</span></div>
+                <div class="nav-tab" id="tab-kalendar" onclick="event.stopPropagation(); navigateTo('kalendar')"><i class="fa-solid fa-calendar-days"></i><span>Kalendář</span></div>
+                <div class="nav-tab" id="tab-zadavani" onclick="event.stopPropagation(); navigateTo('zadavani')"><i class="fa-solid fa-plus"></i><span>Přidat</span></div>
             </div>
         </div>
     </div>
@@ -960,7 +1109,7 @@ function applyStates(targetDateKey, mapping) {
             saveToStorage();
         }
 
-        const LEAF_SVG = `<svg viewBox="0 0 24 24" width="22" height="22" style="fill:none;stroke:#6bcf8e;stroke-width:2"><path d="M12 22V12"/><path d="M12 12c2-1.5 4-1 4-3.5S14 5 12 8c-2-3-4-2-4 .5s2 2 4 3.5z" fill="#6bcf8e" fill-opacity="0.25"/></svg>`;
+        const LEAF_SVG = `<svg viewBox="0 0 24 24" width="22" height="22" style="fill:none;stroke:#557a61;stroke-width:2"><path d="M12 22V12"/><path d="M12 12c2-1.5 4-1 4-3.5S14 5 12 8c-2-3-4-2-4 .5s2 2 4 3.5z" fill="#557a61" fill-opacity="0.25"/></svg>`;
 
         window.addEventListener('DOMContentLoaded', () => {
             registerServiceWorker();
@@ -998,22 +1147,57 @@ function applyStates(targetDateKey, mapping) {
             
             const iconContainer = document.getElementById('header-icon-container');
             const switcher = document.getElementById('global-space-switcher');
+            document.body.classList.toggle('admin-mode', tab === 'zadavani');
             
-            if (tab === 'prehled') {
+            if (tab === 'souhrn') {
+                iconContainer.innerHTML = '<i class="fa-solid fa-seedling"></i>';
+                switcher.style.display = 'none';
+                render();
+            } else if (tab === 'prehled') {
                 iconContainer.innerHTML = '<i class="fa-solid fa-leaf"></i>';
                 switcher.style.display = 'flex';
-                document.body.classList.remove('admin-mode');
                 render();
             } else if (tab === 'kalendar') {
                 iconContainer.innerHTML = '<i class="fa-solid fa-droplet"></i>';
                 switcher.style.display = 'flex';
-                document.body.classList.remove('admin-mode');
                 render();
             } else if (tab === 'zadavani') {
-                iconContainer.innerHTML = '<i class="fa-solid fa-seedling"></i>';
+                iconContainer.innerHTML = '<i class="fa-solid fa-plus"></i>';
                 switcher.style.display = 'none';
-                document.body.classList.add('admin-mode');
                 setTimeout(drawSnakeLine, 50);
+            }
+        }
+
+        function renderSouhrn() {
+            const total = plants.length;
+            const alarm = countUnwateredAll(todayDateKey);
+            const doma = countUnwateredInSpace('doma', todayDateKey);
+            const zahrada = countUnwateredInSpace('zahrada', todayDateKey);
+            const droplet = document.getElementById('souhrn-droplet');
+            const countLine = document.getElementById('souhrn-count-line');
+            const sub = document.getElementById('souhrn-sub');
+
+            document.getElementById('souhrn-doma').textContent = doma;
+            document.getElementById('souhrn-zahrada').textContent = zahrada;
+            document.getElementById('souhrn-doma').classList.toggle('warm', doma > 0);
+            document.getElementById('souhrn-zahrada').classList.toggle('warm', zahrada > 0);
+
+            if (total === 0) {
+                countLine.innerHTML = '0';
+                sub.textContent = 'Zatím žádné rostliny — přidej první přes +';
+                droplet?.classList.add('all-done');
+                return;
+            }
+            if (alarm === 0) {
+                countLine.innerHTML = '<span style="color:var(--accent-cyan)">0</span>';
+                sub.textContent = `Všech ${total} rostlin je dnes zalito — paráda!`;
+                droplet?.classList.add('all-done');
+            } else {
+                countLine.innerHTML = `<span>${alarm}</span> / ${total}`;
+                sub.textContent = alarm === 1
+                    ? 'rostlina dnes čeká na zalití'
+                    : 'rostlin dnes čeká na zalití';
+                droplet?.classList.remove('all-done');
             }
         }
 
@@ -1301,6 +1485,7 @@ function applyStates(targetDateKey, mapping) {
         }
 
         function render() {
+            renderSouhrn();
             renderOverviewGrid();
             renderCalendarView();
             updateMapVisualization(getSelectedCalendarDateKey());

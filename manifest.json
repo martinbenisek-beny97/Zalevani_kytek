@@ -4,8 +4,8 @@
   "description": "Připomínáček zalévání rostlin doma a na zahradě",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#1c2128",
-  "theme_color": "#1c2128",
+  "background_color": "#f4efe6",
+  "theme_color": "#f4efe6",
   "orientation": "portrait",
   "lang": "cs",
   "icons": [
