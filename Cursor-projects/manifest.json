@@ -1,0 +1,25 @@
+{
+  "name": "Urban Jungle",
+  "short_name": "Urban Jungle",
+  "description": "Připomínáček zalévání rostlin doma a na zahradě",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1c2128",
+  "theme_color": "#1c2128",
+  "orientation": "portrait",
+  "lang": "cs",
+  "icons": [
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

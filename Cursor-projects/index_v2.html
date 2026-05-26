@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Urban Jungle</title>
+    <meta name="theme-color" content="#1c2128">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Urban Jungle">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="icons/icon.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;0,9..40,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg: #1c2128;
+            --surface: #252b34;
+            --surface-raised: #2d3540;
+            --text: #e8ecf1;
+            --text-muted: #8b95a3;
+            --accent-cyan: #3dd6f5;
+            --accent-cyan-dim: #2a9fb8;
+            --accent-warm: #e07a5f;
+            --accent-warm-dim: #b85a44;
+            --leaf: #6bcf8e;
+            --neo-light: rgba(255, 255, 255, 0.06);
+            --neo-dark: rgba(0, 0, 0, 0.45);
+            --glow-cyan: 0 0 12px rgba(61, 214, 245, 0.45);
+            --glow-warm: 0 0 14px rgba(224, 122, 95, 0.5);
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 22px;
+            /* legacy aliases */
+            --cream: var(--text);
+            --dark-green: var(--bg);
+            --orange: var(--accent-warm);
+            --water-blue: var(--accent-cyan);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(ellipse 120% 80% at 50% -20%, #2a3340 0%, var(--bg) 55%);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 412px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            padding: 0 18px 100px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 0 -18px 22px;
+            padding: 22px 20px 8px;
+        }
+        header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(135deg, var(--text) 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header-icon-wrap {
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: var(--surface);
+            box-shadow: 6px 6px 14px var(--neo-dark), -4px -4px 10px var(--neo-light);
+        }
+        header .fa-leaf { color: var(--leaf); }
+        header .fa-droplet { color: var(--accent-cyan); text-shadow: var(--glow-cyan); }
+        header .fa-seedling { color: var(--accent-warm); }
+
+        .switcher-row {
+            display: flex;
+            gap: 0;
+            margin-bottom: 22px;
+            width: 100%;
+            padding: 5px;
+            border-radius: 999px;
+            background: var(--surface);
+            box-shadow: inset 5px 5px 12px var(--neo-dark), inset -3px -3px 8px var(--neo-light);
+        }
+
+        .neo-btn {
+            border: none;
+            border-radius: 999px;
+            padding: 12px 16px;
+            font-weight: 700;
+            font-size: 14px;
+            background: transparent;
+            color: var(--text-muted);
+            transition: all 0.25s ease;
+            cursor: pointer;
+        }
+        .space-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .space-btn.active {
+            color: var(--bg);
+            background: linear-gradient(145deg, var(--accent-cyan) 0%, var(--accent-cyan-dim) 100%);
+            box-shadow: var(--glow-cyan), 3px 3px 8px var(--neo-dark);
+        }
+        .space-count-badge {
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            line-height: 1;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+        .space-count-badge.visible { display: inline-flex; }
+        .space-btn.active .space-count-badge.visible {
+            background: rgba(0, 0, 0, 0.28);
+            color: #fff;
+        }
+        .space-btn:not(.active) .space-count-badge.visible {
+            color: #fff;
+            background: linear-gradient(145deg, var(--accent-warm), var(--accent-warm-dim));
+            box-shadow: var(--glow-warm);
+        }
+
+        .page { display: none; flex-direction: column; width: 100%; }
+        .page.active { display: flex; }
+
+        .page-title-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .page-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            color: var(--text-muted);
+        }
+
+        .status-badge-sphere {
+            min-width: 30px;
+            height: 30px;
+            padding: 0 8px;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 800;
+            transition: all 0.3s ease;
+        }
+        .status-badge-sphere.pending {
+            color: #fff;
+            background: linear-gradient(145deg, var(--accent-warm), var(--accent-warm-dim));
+            box-shadow: var(--glow-warm), inset 0 1px 0 rgba(255,255,255,0.25);
+        }
+        .status-badge-sphere.done {
+            color: var(--bg);
+            background: linear-gradient(145deg, var(--accent-cyan), var(--accent-cyan-dim));
+            box-shadow: var(--glow-cyan);
+        }
+
+        #maps-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 16px;
+            margin-bottom: 8px;
+            min-height: 240px;
+            border-radius: var(--radius-lg);
+            background: var(--surface);
+            box-shadow: inset 6px 6px 14px var(--neo-dark), inset -4px -4px 10px var(--neo-light);
+        }
+        .map-container path {
+            stroke: rgba(255, 255, 255, 0.08);
+            stroke-width: 1.5;
+        }
+
+        .plant-grid-2col {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            width: 100%;
+        }
+
+        .plant-card {
+            position: relative;
+            background: var(--surface-raised);
+            border-radius: var(--radius-lg);
+            padding: 18px 14px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            box-shadow: 8px 8px 18px var(--neo-dark), -5px -5px 12px var(--neo-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .plant-card:active { transform: scale(0.98); }
+
+        .plant-card h3 {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+            padding: 0 6px;
+            color: var(--text);
+        }
+        .plant-card .room-info {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.3;
+        }
+        .plant-card .room-info span {
+            display: inline-block;
+            margin-left: 4px;
+            padding: 2px 7px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.25);
+            color: var(--text-muted);
+        }
+
+        .plant-icon-wrap {
+            margin-bottom: 12px;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface);
+            box-shadow: inset 4px 4px 10px var(--neo-dark), inset -2px -2px 6px var(--neo-light);
+        }
+        .plant-icon-wrap svg path { stroke: var(--leaf); }
+        .plant-icon-wrap svg path[fill] { fill: rgba(107, 207, 142, 0.2); }
+
+        .delete-plant-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 30px;
+            height: 30px;
+            border: none;
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 3px 3px 8px var(--neo-dark), -2px -2px 5px var(--neo-light);
+            transition: color 0.2s, box-shadow 0.2s;
+            z-index: 10;
+        }
+        .delete-plant-btn:active { color: var(--accent-warm); box-shadow: var(--glow-warm); }
+
+        .water-3d-button {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-size: 17px;
+        }
+        .water-3d-button.needs-water {
+            color: #fff;
+            background: linear-gradient(145deg, #f0947d, var(--accent-warm-dim));
+            box-shadow: var(--glow-warm), 5px 5px 12px var(--neo-dark);
+        }
+        .water-3d-button.watered-today {
+            color: var(--bg);
+            background: linear-gradient(145deg, var(--accent-cyan), var(--accent-cyan-dim));
+            box-shadow: var(--glow-cyan), 5px 5px 12px var(--neo-dark);
+        }
+        .water-3d-button.other-days {
+            color: var(--text-muted);
+            background: var(--surface);
+            box-shadow: inset 4px 4px 10px var(--neo-dark), inset -2px -2px 6px var(--neo-light);
+            opacity: 0.65;
+        }
+
+        .card-interval-badge {
+            margin-top: 12px;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 999px;
+            cursor: pointer;
+            color: var(--text-muted);
+            background: var(--surface);
+            box-shadow: inset 3px 3px 8px var(--neo-dark), inset -2px -2px 5px var(--neo-light);
+            letter-spacing: 0.02em;
+        }
+        .card-interval-badge:active { color: var(--accent-cyan); }
+
+        .inline-drum {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: center;
+            width: 100%;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .inline-drum.open { max-height: 88px; opacity: 1; margin-top: 12px; }
+
+        .mini-bead {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            font-size: 10px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--surface-raised);
+            color: var(--text-muted);
+            box-shadow: 4px 4px 8px var(--neo-dark), -2px -2px 5px var(--neo-light);
+            cursor: pointer;
+        }
+        .mini-bead.active {
+            color: var(--accent-cyan);
+            box-shadow: inset 3px 3px 8px var(--neo-dark), var(--glow-cyan);
+            font-weight: 800;
+        }
+
+        .hidden-picker {
+            position: absolute;
+            opacity: 0;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            cursor: pointer;
+            z-index: 5;
+        }
+
+        .beads-line-container { position: relative; margin-bottom: 24px; padding: 12px 0; width: 100%; }
+        .beads-wire {
+            position: absolute;
+            top: 50%;
+            left: 12px;
+            right: 12px;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .beads-train { display: flex; justify-content: space-between; position: relative; z-index: 2; width: 100%; }
+
+        .calendar-bead {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--surface-raised);
+            box-shadow: 5px 5px 12px var(--neo-dark), -3px -3px 8px var(--neo-light);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+        .calendar-bead span { font-size: 7px; font-weight: 600; opacity: 0.7; margin-top: 1px; }
+        .calendar-bead.is-today {
+            box-shadow: 0 0 0 2px var(--accent-warm), 5px 5px 12px var(--neo-dark);
+        }
+        .calendar-bead.active-view {
+            color: var(--bg);
+            background: linear-gradient(145deg, var(--accent-cyan), var(--accent-cyan-dim));
+            box-shadow: var(--glow-cyan), inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .calendar-bead.active-view span { opacity: 0.9; color: inherit; }
+
+        /* --- Zadávání --- */
+        #view-zadavani label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            margin-bottom: 10px;
+            color: var(--text-muted);
+        }
+
+        .text-input-sand {
+            width: 100%;
+            border: none;
+            outline: none;
+            padding: 16px 18px;
+            border-radius: var(--radius-md);
+            background: var(--surface);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 15px;
+            font-family: inherit;
+            box-shadow: inset 5px 5px 12px var(--neo-dark), inset -3px -3px 8px var(--neo-light);
+        }
+        .text-input-sand::placeholder { color: var(--text-muted); opacity: 0.6; }
+
+        .admin-sand-btn, .room-node-sand, .interval-bead-sand {
+            background: var(--surface-raised) !important;
+            color: var(--text-muted) !important;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 5px 5px 12px var(--neo-dark), -3px -3px 8px var(--neo-light) !important;
+        }
+        .admin-sand-btn.selected-orange,
+        .room-node-sand.selected-orange,
+        .interval-bead-sand.selected-orange {
+            color: var(--bg) !important;
+            background: linear-gradient(145deg, var(--accent-warm), var(--accent-warm-dim)) !important;
+            box-shadow: var(--glow-warm), inset 0 1px 0 rgba(255,255,255,0.2) !important;
+        }
+
+        .snake-layout {
+            position: relative;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px 10px;
+            padding: 12px 0;
+            width: 100%;
+        }
+        .snake-svg-layer { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+        .room-node-sand {
+            padding: 12px 6px;
+            font-size: 11px;
+            z-index: 2;
+            position: relative;
+        }
+
+        .interval-train { display: flex; justify-content: space-between; position: relative; z-index: 2; width: 100%; gap: 4px; }
+        .interval-bead-sand {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            position: relative;
+        }
+
+        /* --- Navigace --- */
+        .nav-dock {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 412px;
+            height: 72px;
+            z-index: 999;
+        }
+        .nav-svg-bg {
+            position: absolute;
+            inset: 0;
+            fill: var(--surface);
+            filter: drop-shadow(0 -8px 24px rgba(0, 0, 0, 0.5));
+            transition: fill 0.2s;
+        }
+        .nav-interactive-layer {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 10;
+            padding: 0 8px;
+        }
+        .nav-tab {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            cursor: pointer;
+            height: 100%;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            transition: color 0.2s;
+        }
+        .nav-tab i {
+            font-size: 17px;
+            margin-bottom: 4px;
+            transition: all 0.25s cubic-bezier(0.34, 1.2, 0.64, 1);
+        }
+        .nav-tab.active { color: var(--accent-cyan); }
+        .nav-tab.active i {
+            transform: translateY(-18px) scale(1.05);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            color: var(--bg);
+            background: linear-gradient(145deg, var(--accent-cyan), var(--accent-cyan-dim));
+            box-shadow: var(--glow-cyan), 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+
+        .nav-dock[data-active="prehled"] .nav-svg-bg { clip-path: url(#clip-prehled); }
+        .nav-dock[data-active="kalendar"] .nav-svg-bg { clip-path: url(#clip-kalendar); }
+        .nav-dock[data-active="zadavani"] .nav-svg-bg { clip-path: url(#clip-zadavani); }
+
+        body.admin-mode .nav-tab.active i {
+            background: linear-gradient(145deg, var(--accent-warm), var(--accent-warm-dim));
+            box-shadow: var(--glow-warm), 0 8px 20px rgba(0, 0, 0, 0.35);
+        }
+        body.admin-mode .nav-tab.active { color: var(--accent-warm); }
+
+        /* Mapa */
+        .svg-spot {
+            fill: #3a4452;
+            transition: fill 0.35s ease, filter 0.35s ease;
+        }
+        .svg-spot.active-alarm {
+            fill: var(--accent-warm) !important;
+            filter: drop-shadow(0 0 8px rgba(224, 122, 95, 0.8));
+        }
+        .svg-spot.active-watered {
+            fill: var(--accent-cyan) !important;
+            filter: drop-shadow(0 0 8px rgba(61, 214, 245, 0.7));
+        }
+        .empty-hint {
+            text-align: center;
+            padding: 36px 16px;
+            font-size: 13px;
+            color: var(--text-muted);
+            grid-column: span 2;
+            line-height: 1.5;
+        }
+
+        .header-actions { display: flex; gap: 10px; align-items: center; }
+        .icon-btn {
+            width: 44px; height: 44px; border: none; border-radius: 14px;
+            background: var(--surface); color: var(--text-muted);
+            box-shadow: 6px 6px 14px var(--neo-dark), -4px -4px 10px var(--neo-light);
+            cursor: pointer; font-size: 17px; transition: color 0.2s, box-shadow 0.2s;
+        }
+        .icon-btn.active { color: var(--accent-cyan); box-shadow: var(--glow-cyan); }
+
+        .install-banner, .notif-panel {
+            border-radius: var(--radius-md);
+            background: var(--surface-raised);
+            border: 1px solid rgba(255,255,255,0.06);
+            box-shadow: 8px 8px 18px var(--neo-dark);
+            margin-bottom: 16px;
+            padding: 14px 16px;
+        }
+        .install-banner { display: none; }
+        .install-banner.visible { display: block; }
+        .install-banner p, .notif-panel p { font-size: 13px; color: var(--text-muted); line-height: 1.45; margin-bottom: 12px; }
+        .install-banner strong, .notif-panel strong { color: var(--text); display: block; margin-bottom: 6px; font-size: 14px; }
+        .panel-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+        .panel-btn {
+            flex: 1; min-width: 120px; border: none; border-radius: 12px; padding: 11px 14px;
+            font-weight: 700; font-size: 13px; cursor: pointer; font-family: inherit;
+        }
+        .panel-btn-primary {
+            color: var(--bg);
+            background: linear-gradient(145deg, var(--accent-cyan), var(--accent-cyan-dim));
+            box-shadow: var(--glow-cyan);
+        }
+        .panel-btn-ghost {
+            color: var(--text-muted);
+            background: var(--surface);
+            box-shadow: inset 3px 3px 8px var(--neo-dark);
+        }
+        .notif-panel { display: none; }
+        .notif-panel.open { display: block; }
+        .notif-time-row { display: flex; align-items: center; gap: 10px; margin: 12px 0; }
+        .notif-time-row input {
+            flex: 1; border: none; border-radius: 12px; padding: 12px;
+            background: var(--surface); color: var(--text); font-weight: 700; font-family: inherit;
+            box-shadow: inset 4px 4px 10px var(--neo-dark);
+        }
+        .notif-status { font-size: 12px; color: var(--leaf); margin-top: 8px; }
+        .notif-status.warn { color: var(--accent-warm); }
+    </style>
+</head>
+<body data-active-tab="prehled">
+
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <clipPath id="clip-prehled" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.05,0 C 0.11,0 0.11,0.45 0.17,0.45 C 0.23,0.45 0.23,0 0.29,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
+            <clipPath id="clip-kalendar" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.38,0 C 0.44,0 0.44,0.45 0.50,0.45 C 0.56,0.45 0.56,0 0.62,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
+            <clipPath id="clip-zadavani" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.71,0 C 0.77,0 0.77,0.45 0.83,0.45 C 0.89,0.45 0.89,0 0.95,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
+        </defs>
+    </svg>
+
+    <div class="phone-container">
+        <header>
+            <h1 id="main-title">Urban Jungle</h1>
+            <div class="header-actions">
+                <button type="button" class="icon-btn" id="btn-notif" title="Připomínky" onclick="toggleNotifPanel()"><i class="fa-solid fa-bell"></i></button>
+                <div class="header-icon-wrap" id="header-icon-container"><i class="fa-solid fa-leaf"></i></div>
+            </div>
+        </header>
+
+        <div class="install-banner" id="install-banner">
+            <strong>Nainstaluj si aplikaci na plochu</strong>
+            <p>V Safari: Sdílet → <b>Přidat na plochu domů</b>. Pak poběží jako appka a půjdou připomínky (na iPhonu po instalaci).</p>
+            <div class="panel-actions">
+                <button type="button" class="panel-btn panel-btn-ghost" onclick="dismissInstallBanner()">Později</button>
+            </div>
+        </div>
+
+        <div class="notif-panel" id="notif-panel">
+            <strong>Připomínky zalévání</strong>
+            <p>Upozornění při otevření aplikace a v nastaveném čase (funguje nejlépe po přidání na plochu).</p>
+            <div class="notif-time-row">
+                <label for="notif-time" style="font-size:12px;color:var(--text-muted);white-space:nowrap;">Čas</label>
+                <input type="time" id="notif-time" value="08:00">
+            </div>
+            <div class="panel-actions">
+                <button type="button" class="panel-btn panel-btn-primary" onclick="enableNotifications()">Zapnout</button>
+                <button type="button" class="panel-btn panel-btn-ghost" onclick="disableNotifications()">Vypnout</button>
+            </div>
+            <div class="notif-status" id="notif-status"></div>
+        </div>
+
+        <div class="switcher-row" id="global-space-switcher">
+            <div class="neo-btn space-btn active" id="space-doma" onclick="changeGlobalSpace('doma')">
+                Doma<span class="space-count-badge" id="badge-doma"></span>
+            </div>
+            <div class="neo-btn space-btn" id="space-zahrada" onclick="changeGlobalSpace('zahrada')">
+                Zahrada<span class="space-count-badge" id="badge-zahrada"></span>
+            </div>
+        </div>
+
+        <div id="view-prehled" class="page active">
+            <div class="page-title-row"><div class="page-title">Moje zelená džungle</div></div>
+            <div class="plant-grid-2col" id="grid-prehled"></div>
+        </div>
+
+        <div id="view-kalendar" class="page">
+            <div class="page-title-row">
+                <div class="page-title" id="calendar-title-day">Plán směn: Dnes</div>
+            </div>
+            
+<div id="maps-wrapper">
+    
+    <svg id="map-doma" class="map-container" viewBox="-10 -10 220 220" style="width:100%; max-width:250px; margin: 20px auto; display:block; overflow: visible;">
+        <defs>
+            <filter id="drop-shadow-doma" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+            </filter>
+        </defs>
+        <path d="M10,10 H190 V100 H110 V190 H10 Z" fill="none" stroke="#e0dcd5" stroke-width="2"/>
+        <circle id="map-okno-kuchyne" class="svg-spot" cx="150" cy="12" r="12" filter="url(#drop-shadow-doma)"/>
+        <circle id="map-nad-terarkem" class="svg-spot" cx="180" cy="50" r="12" filter="url(#drop-shadow-doma)"/>
+        <circle id="map-zaves-u-okna" class="svg-spot" cx="50" cy="40" r="12" filter="url(#drop-shadow-doma)"/>
+        <circle id="map-zaves-u-Lea" class="svg-spot" cx="90" cy="70" r="12" filter="url(#drop-shadow-doma)"/>
+        <circle id="map-knihovnicka" class="svg-spot" cx="20" cy="110" r="12" filter="url(#drop-shadow-doma)"/>
+        <circle id="map-venku-za-oknem" class="svg-spot" cx="110" cy="130" r="12" filter="url(#drop-shadow-doma)"/>
+    </svg>
+
+    <svg id="map-zahrada" class="map-container" viewBox="-10 -10 220 220" style="width:100%; max-width:250px; margin: 20px auto; display:none; overflow: visible;">
+        <defs>
+            <filter id="drop-shadow-zahrada" x="-50%" y="-50%" width="200%" height="200%">
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+            </filter>
+        </defs>
+        <path d="M20,20 H180 V180 H20 Z" fill="none" stroke="#e0dcd5" stroke-width="2"/>
+        <circle id="map-sklenik" class="svg-spot" cx="60" cy="60" r="15" filter="url(#drop-shadow-zahrada)"/>
+        <circle id="map-zahon" class="svg-spot" cx="140" cy="60" r="15" filter="url(#drop-shadow-zahrada)"/>
+        <circle id="map-terasa" class="svg-spot" cx="100" cy="140" r="15" filter="url(#drop-shadow-zahrada)"/>
+    </svg>
+</div>
+            <div class="beads-line-container">
+                <div class="beads-wire"></div>
+                <div class="beads-train" id="calendar-beads-row"></div>
+            </div>
+            <div class="plant-grid-2col" id="grid-kalendar"></div>
+        </div>
+
+        <div id="view-zadavani" class="page">
+            <div class="page-title-row"><div class="page-title">Nový přírůstek</div></div>
+            <form id="plant-form" onsubmit="handleFormSubmit(event)">
+                <div class="form-group">
+                    <label>Název kytky</label>
+                    <input type="text" id="inp-name" class="text-input-sand" placeholder="např. Monstera" required autocomplete="off">
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Prostředí</label>
+                    <div class="switcher-row">
+                        <div class="neo-btn space-btn admin-sand-btn selected-orange" id="env-doma" onclick="changeEditorEnv('doma')">Doma</div>
+                        <div class="neo-btn space-btn admin-sand-btn" id="env-zahrada" onclick="changeEditorEnv('zahrada')">Zahrada</div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Místnost / Sekce</label>
+                    <div class="snake-layout" id="snake-container"><svg class="snake-svg-layer" id="snake-svg"></svg></div>
+                </div>
+                <div class="form-group" style="margin-top: 15px;">
+                    <label>Interval zalévání (Dny)</label>
+                    <div class="beads-line-container">
+                        <div class="beads-wire"></div>
+                        <div class="interval-train" id="interval-beads-row"></div>
+                    </div>
+                </div>
+                <button type="submit" class="neo-btn admin-sand-btn" style="width: 100%; margin-top: 20px; font-weight: 800; font-size:16px; border: 1px solid rgba(224,122,95,0.3); color: var(--orange) !important;">Uložit do inventáře</button>
+            </form>
+        </div>
+
+        <div class="nav-dock" id="bottom-dock" data-active="prehled">
+            <svg class="nav-svg-bg" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100"/></svg>
+            <div class="nav-interactive-layer">
+                <div class="nav-tab active" id="tab-prehled" onclick="navigateTo('prehled')"><i class="fa-solid fa-house"></i><span>Přehled</span></div>
+                <div class="nav-tab" id="tab-kalendar" onclick="navigateTo('kalendar')"><i class="fa-solid fa-calendar-days"></i><span>Kalendář</span></div>
+                <div class="nav-tab" id="tab-zadavani" onclick="navigateTo('zadavani')"><i class="fa-solid fa-plus"></i><span>Zadávání</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentGlobalSpace = 'doma';
+        let currentEditorEnv = 'doma';
+        let selectedRoom = '';
+        let selectedInterval = 1;
+        let activeInlineDrumId = null;
+
+        const todayIdx = (new Date().getDay() + 6) % 7; 
+        let selectedCalendarDayIdx = todayIdx;
+        const daysLookup = [
+            { s: "Po", full: "Pondělí" }, 
+            { s: "Út", full: "Úterý" }, 
+            { s: "St", full: "Středa" }, 
+            { s: "Čt", full: "Čtvrtek" }, 
+            { s: "Pá", full: "Pátek" }, 
+            { s: "So", full: "Sobota" }, 
+            { s: "Ne", full: "Neděle" }
+        ];
+
+        const roomsData = { doma: ["okno kuchyně", "nad terárkem", "závěs u okna", "závěs u Lea", "knihovnička", "venku za oknem"], zahrada: ["Skleník", "Záhon", "Terasa"] };
+
+    const homeMapMapping = {
+    "okno kuchyně": "map-okno-kuchyne",
+    "nad terárkem": "map-nad-terarkem",
+    "závěs u okna": "map-zaves-u-okna",
+    "závěs u Lea": "map-zaves-u-Lea",
+    "knihovnička": "map-knihovnicka",
+    "venku za oknem": "map-venku-za-oknem"
+};
+
+const gardenMapMapping = {
+    "Skleník": "map-sklenik",
+    "Záhon": "map-zahon",
+    "Terasa": "map-terasa"
+};
+
+        const STORAGE_PLANTS = 'urban_jungle_plants';
+        const STORAGE_NOTIF = 'urban_jungle_notif';
+        const STORAGE_INSTALL_DISMISS = 'urban_jungle_install_dismiss';
+        const STORAGE_LAST_NOTIF = 'urban_jungle_last_notif_date';
+
+        function dateKey(d) {
+            const x = new Date(d);
+            const y = x.getFullYear();
+            const m = String(x.getMonth() + 1).padStart(2, '0');
+            const day = String(x.getDate()).padStart(2, '0');
+            return `${y}-${m}-${day}`;
+        }
+
+        const todayDateKey = dateKey(new Date());
+
+        function offsetDateKey(days) {
+            const d = new Date();
+            d.setDate(d.getDate() + days);
+            return dateKey(d);
+        }
+
+        function daysBetween(fromKey, toKey) {
+            const a = new Date(fromKey + 'T12:00:00');
+            const b = new Date(toKey + 'T12:00:00');
+            return Math.round((b - a) / 86400000);
+        }
+
+        function getDateForWeekDayIdx(dayIdx) {
+            const now = new Date();
+            const currentIdx = (now.getDay() + 6) % 7;
+            const d = new Date();
+            d.setDate(d.getDate() + (dayIdx - currentIdx));
+            return dateKey(d);
+        }
+
+        function migratePlant(p) {
+            if (p.lastWateredDate) {
+                delete p.lastWateredDayIdx;
+                return p;
+            }
+            if (p.lastWateredDayIdx !== undefined) {
+                const now = new Date();
+                const currentIdx = (now.getDay() + 6) % 7;
+                let diff = currentIdx - p.lastWateredDayIdx;
+                if (diff < 0) diff += 7;
+                const d = new Date();
+                d.setDate(d.getDate() - diff);
+                p.lastWateredDate = dateKey(d);
+                delete p.lastWateredDayIdx;
+            } else {
+                p.lastWateredDate = todayDateKey;
+            }
+            return p;
+        }
+
+        function checkWateringState(plant, targetDateKey) {
+            const daysSince = daysBetween(plant.lastWateredDate, targetDateKey);
+            const interval = Number(plant.interval);
+            if (daysSince === 0) return 'watered';
+            if (daysSince > 0 && daysSince % interval === 0) return 'alarm';
+            if (daysSince > interval) return 'alarm';
+            return 'other';
+        }
+
+        function getSelectedCalendarDateKey() {
+            return getDateForWeekDayIdx(selectedCalendarDayIdx);
+        }
+
+        function getBadgeDateKey() {
+            const calView = document.getElementById('view-kalendar');
+            if (calView && calView.classList.contains('active')) return getSelectedCalendarDateKey();
+            return todayDateKey;
+        }
+
+        function getActiveWaterDateKey() {
+            const calView = document.getElementById('view-kalendar');
+            if (calView && calView.classList.contains('active')) return getSelectedCalendarDateKey();
+            return todayDateKey;
+        }
+
+function updateMapVisualization(targetDateKey) {
+    const mapDoma = document.getElementById('map-doma');
+    const mapZahrada = document.getElementById('map-zahrada');
+    
+    if (currentGlobalSpace === 'doma') {
+        mapDoma.style.display = 'block';
+        mapZahrada.style.display = 'none';
+        applyStates(targetDateKey, homeMapMapping);
+    } else {
+        mapDoma.style.display = 'none';
+        mapZahrada.style.display = 'block';
+        applyStates(targetDateKey, gardenMapMapping);
+    }
+}
+
+function applyStates(targetDateKey, mapping) {
+    const activeMapId = currentGlobalSpace === 'doma' ? 'map-doma' : 'map-zahrada';
+    const activeMap = document.getElementById(activeMapId);
+    if (!activeMap) return;
+
+    activeMap.querySelectorAll('.svg-spot').forEach(s => {
+        s.classList.remove('active-alarm', 'active-watered');
+    });
+
+    Object.entries(mapping).forEach(([roomName, spotId]) => {
+        const el = document.getElementById(spotId);
+        if (!el) return;
+
+        const roomPlants = plants.filter(p => p.space === currentGlobalSpace && p.room === roomName);
+        if (roomPlants.length === 0) return;
+
+        let hasAlarm = false;
+        let hasWatered = false;
+        roomPlants.forEach(plant => {
+            const state = checkWateringState(plant, targetDateKey);
+            if (state === 'alarm') hasAlarm = true;
+            else if (state === 'watered') hasWatered = true;
+        });
+
+        if (hasAlarm) el.classList.add('active-alarm');
+        else if (hasWatered) el.classList.add('active-watered');
+    });
+}
+
+        function countUnwateredInSpace(space, targetDateKey) {
+            return plants.filter(
+                p => p.space === space && checkWateringState(p, targetDateKey) === 'alarm'
+            ).length;
+        }
+
+        function countUnwateredAll(targetDateKey) {
+            return plants.filter(p => checkWateringState(p, targetDateKey) === 'alarm').length;
+        }
+
+        function updateSpaceSwitcherBadges() {
+            const targetDateKey = getBadgeDateKey();
+            ['doma', 'zahrada'].forEach(space => {
+                const badge = document.getElementById(`badge-${space}`);
+                if (!badge) return;
+                const count = countUnwateredInSpace(space, targetDateKey);
+                badge.textContent = count > 0 ? String(count) : '';
+                badge.classList.toggle('visible', count > 0);
+            });
+        }
+
+        let plants = [];
+        const savedPlants = localStorage.getItem(STORAGE_PLANTS);
+        if (savedPlants) {
+            plants = JSON.parse(savedPlants).map(migratePlant);
+            saveToStorage();
+        } else {
+            plants = [
+                { id: 1, name: "Monstera", space: "doma", room: "nad terárkem", interval: 3, lastWateredDate: offsetDateKey(-3) },
+                { id: 2, name: "Ficus Lyrata", space: "doma", room: "venku za oknem", interval: 5, lastWateredDate: todayDateKey },
+                { id: 3, name: "Rajčata", space: "zahrada", room: "Skleník", interval: 1, lastWateredDate: offsetDateKey(-1) }
+            ];
+            saveToStorage();
+        }
+
+        const LEAF_SVG = `<svg viewBox="0 0 24 24" width="22" height="22" style="fill:none;stroke:#6bcf8e;stroke-width:2"><path d="M12 22V12"/><path d="M12 12c2-1.5 4-1 4-3.5S14 5 12 8c-2-3-4-2-4 .5s2 2 4 3.5z" fill="#6bcf8e" fill-opacity="0.25"/></svg>`;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            registerServiceWorker();
+            buildCalendarBeads();
+            buildIntervalBeads();
+            buildSnakeGrid();
+            initInstallBanner();
+            initNotifUI();
+            render();
+            window.addEventListener('resize', drawSnakeLine);
+            document.addEventListener('visibilitychange', () => {
+                if (!document.hidden) maybeFireScheduledNotification();
+            });
+            setInterval(maybeFireScheduledNotification, 60000);
+        });
+
+        function saveToStorage() {
+            localStorage.setItem(STORAGE_PLANTS, JSON.stringify(plants));
+            syncPlantsToServiceWorker();
+            updateAppBadge();
+            checkDailyNotification();
+        }
+
+        function getCountInRoom(space, roomName) {
+            return plants.filter(p => p.space === space && p.room === roomName).length;
+        }
+
+        function navigateTo(tab) {
+            document.getElementById('bottom-dock').setAttribute('data-active', tab);
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            document.getElementById(`view-${tab}`).classList.add('active');
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            
+            const iconContainer = document.getElementById('header-icon-container');
+            const switcher = document.getElementById('global-space-switcher');
+            
+            if (tab === 'prehled') {
+                iconContainer.innerHTML = '<i class="fa-solid fa-leaf"></i>';
+                switcher.style.display = 'flex';
+                document.body.classList.remove('admin-mode');
+                render();
+            } else if (tab === 'kalendar') {
+                iconContainer.innerHTML = '<i class="fa-solid fa-droplet"></i>';
+                switcher.style.display = 'flex';
+                document.body.classList.remove('admin-mode');
+                render();
+            } else if (tab === 'zadavani') {
+                iconContainer.innerHTML = '<i class="fa-solid fa-seedling"></i>';
+                switcher.style.display = 'none';
+                document.body.classList.add('admin-mode');
+                setTimeout(drawSnakeLine, 50);
+            }
+        }
+
+        function changeGlobalSpace(space) {
+            currentGlobalSpace = space;
+            document.querySelectorAll('#global-space-switcher .space-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`space-${space}`).classList.add('active');
+            activeInlineDrumId = null;
+            render();
+        }
+
+        function buildCalendarBeads() {
+            const row = document.getElementById('calendar-beads-row');
+            row.innerHTML = '';
+            daysLookup.forEach((d, idx) => {
+                const bead = document.createElement('div');
+                bead.className = `calendar-bead ${idx === todayIdx ? 'is-today' : ''}`;
+                bead.id = `cal-bead-${idx}`;
+                bead.innerHTML = `${d.s}<span>${idx === todayIdx ? 'Dnes' : '•'}</span>`;
+                bead.onclick = () => {
+                    document.querySelectorAll('.calendar-bead').forEach(b => b.classList.remove('active-view'));
+                    bead.classList.add('active-view');
+                    selectedCalendarDayIdx = idx;
+                    
+                    const dayName = idx === todayIdx ? 'Dnes' : daysLookup[idx].full;
+                    document.getElementById('calendar-title-day').innerText = `Plán směn: ${dayName}`;
+                    
+                    render();
+                };
+                row.appendChild(bead);
+            });
+            document.getElementById(`cal-bead-${todayIdx}`).classList.add('active-view');
+        }
+
+        function toggleWaterAction(plantId) {
+            const plant = plants.find(p => p.id === plantId);
+            if (!plant) return;
+
+            const targetKey = getActiveWaterDateKey();
+            const interval = Number(plant.interval);
+
+            if (plant.lastWateredDate === targetKey) {
+                const d = new Date(targetKey + 'T12:00:00');
+                d.setDate(d.getDate() - interval);
+                plant.lastWateredDate = dateKey(d);
+            } else {
+                plant.lastWateredDate = targetKey;
+            }
+            saveToStorage();
+            render();
+        }
+
+        function removePlant(plantId, event) {
+            event.stopPropagation();
+            if(confirm("Opravdu chceš tuto rostlinu odebrat z inventáře?")) {
+                plants = plants.filter(p => p.id !== plantId);
+                saveToStorage();
+                render();
+            }
+        }
+
+        function toggleInlineDrum(plantId, event) {
+            event.stopPropagation();
+            activeInlineDrumId = (activeInlineDrumId === plantId) ? null : plantId;
+            renderOverviewGrid();
+        }
+
+        function changePlantIntervalDirectly(plantId, newInterval) {
+            const plant = plants.find(p => p.id === plantId);
+            if (plant) {
+                plant.interval = Number(newInterval);
+            }
+            activeInlineDrumId = null;
+            saveToStorage();
+            render();
+        }
+
+        function renderOverviewGrid() {
+            const grid = document.getElementById('grid-prehled');
+            grid.innerHTML = '';
+            const filtered = plants.filter(p => p.space === currentGlobalSpace);
+
+            if(filtered.length === 0) {
+                grid.innerHTML = `<div class="empty-hint">Žádné rostliny v této sekci. Přidej novou přes tlačítko +</div>`;
+                return;
+            }
+
+            filtered.forEach(plant => {
+                const state = checkWateringState(plant, todayDateKey);
+                const isDrumOpen = activeInlineDrumId === plant.id;
+                const totalInRoom = getCountInRoom(plant.space, plant.room);
+
+                const card = document.createElement('div');
+                card.className = 'plant-card';
+
+                let buttonHtml = '';
+                if (state === 'alarm') {
+                    buttonHtml = `<div class="water-3d-button needs-water" onclick="toggleWaterAction(${plant.id})"><i class="fa-solid fa-droplet"></i></div>`;
+                } else if (state === 'watered') {
+                    buttonHtml = `<div class="water-3d-button watered-today" onclick="toggleWaterAction(${plant.id})"><i class="fa-solid fa-droplet"></i></div>`;
+                } else {
+                    buttonHtml = `<div class="water-3d-button other-days"><i class="fa-solid fa-droplet"></i></div>`;
+                }
+
+                let drumBeads = '';
+                for(let i = 1; i <= 7; i++) {
+                    drumBeads += `<div class="mini-bead ${plant.interval === i ? 'active' : ''}" onclick="event.stopPropagation(); changePlantIntervalDirectly(${plant.id}, ${i});">${i}</div>`;
+                }
+                
+                const isCustom = plant.interval > 7;
+                drumBeads += `
+                    <div class="mini-bead ${isCustom ? 'active' : ''}" style="position:relative;">
+                        <i class="fa-solid fa-star" style="font-size:8px;"></i>
+                        <select class="hidden-picker" onclick="event.stopPropagation();" onchange="event.stopPropagation(); changePlantIntervalDirectly(${plant.id}, this.value);">
+                            <option hidden selected>${isCustom ? plant.interval : ''}</option>
+                            <option value="8">8 d</option><option value="10">10 d</option><option value="14">14 d</option><option value="21">21 d</option><option value="30">30 d</option>
+                        </select>
+                    </div>`;
+
+                card.innerHTML = `
+                    <button class="delete-plant-btn" onclick="removePlant(${plant.id}, event)" title="Odebrat rostlinu">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <div class="plant-icon-wrap">${LEAF_SVG}</div>
+                    <h3>${plant.name}</h3>
+                    <p class="room-info">${plant.room} <span>(${totalInRoom})</span></p>
+                    ${buttonHtml}
+                    <div class="card-interval-badge" onclick="toggleInlineDrum(${plant.id}, event)">
+                        <i class="fa-solid fa-drum"></i> ${plant.interval} dní
+                    </div>
+                    <div class="inline-drum ${isDrumOpen ? 'open' : ''}">
+                        ${drumBeads}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function renderCalendarView() {
+            const container = document.getElementById('grid-kalendar');
+            container.innerHTML = '';
+
+            const spacePlants = plants.filter(p => p.space === currentGlobalSpace);
+            const calDateKey = getSelectedCalendarDateKey();
+            const listPlants = spacePlants.filter(p => {
+                const state = checkWateringState(p, calDateKey);
+                return state === 'alarm' || state === 'watered';
+            });
+
+            if (listPlants.length === 0) {
+                container.innerHTML = '<div class="empty-hint">Tento den nic nezaléváš — vyber jiný den nebo přidej rostlinu.</div>';
+                return;
+            }
+
+            listPlants.forEach(plant => {
+                const state = checkWateringState(plant, calDateKey);
+                const btnClass = state === 'alarm' ? 'needs-water' : 'watered-today';
+
+                const card = document.createElement('div');
+                card.className = 'plant-card';
+                card.innerHTML = `
+                    <div class="plant-icon-wrap">${LEAF_SVG}</div>
+                    <h3>${plant.name}</h3>
+                    <p class="room-info">${plant.room}</p>
+                    <div class="water-3d-button ${btnClass}" onclick="toggleWaterAction(${plant.id})" title="Klepni pro zalití / zrušení">
+                        <i class="fa-solid fa-droplet"></i>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function changeEditorEnv(env) {
+            currentEditorEnv = env;
+            document.getElementById('env-doma').classList.toggle('selected-orange', env === 'doma');
+            document.getElementById('env-zahrada').classList.toggle('selected-orange', env === 'zahrada');
+            buildSnakeGrid();
+        }
+
+        function buildSnakeGrid() {
+            const container = document.getElementById('snake-container');
+            container.querySelectorAll('.room-node-sand').forEach(n => n.remove());
+
+            const list = roomsData[currentEditorEnv];
+            selectedRoom = list[0];
+
+            list.forEach((room, idx) => {
+                const node = document.createElement('div');
+                node.className = `room-node-sand ${idx === 0 ? 'selected-orange' : ''}`;
+                node.innerText = room;
+                node.onclick = () => {
+                    container.querySelectorAll('.room-node-sand').forEach(n => n.classList.remove('selected-orange'));
+                    node.classList.add('selected-orange');
+                    selectedRoom = room;
+                };
+                container.appendChild(node);
+            });
+
+            setTimeout(drawSnakeLine, 40);
+        }
+
+        function drawSnakeLine() {
+            const container = document.getElementById('snake-container');
+            const svg = document.getElementById('snake-svg');
+            const nodes = container.querySelectorAll('.room-node-sand');
+            if (nodes.length === 0) return;
+
+            let pathD = "";
+            const containerRect = container.getBoundingClientRect();
+
+            nodes.forEach((node, idx) => {
+                const nodeRect = node.getBoundingClientRect();
+                const cx = (nodeRect.left + nodeRect.width / 2) - containerRect.left;
+                const cy = (nodeRect.top + nodeRect.height / 2) - containerRect.top;
+
+                if (idx === 0) pathD += `M ${cx} ${cy}`;
+                else pathD += ` L ${cx} ${cy}`;
+            });
+
+            svg.innerHTML = `<path d="${pathD}" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2" stroke-dasharray="4 6" />`;
+        }
+
+        function buildIntervalBeads() {
+            const row = document.getElementById('interval-beads-row');
+            row.innerHTML = '';
+            
+            for (let i = 1; i <= 8; i++) {
+                const bead = document.createElement('div');
+                bead.className = `interval-bead-sand ${i === 1 ? 'selected-orange' : ''}`;
+                bead.id = `int-bead-${i}`;
+                
+                if (i === 8) {
+                    bead.innerHTML = `
+                        <i class="fa-solid fa-star" id="star-icon-id" style="font-size:12px;"></i>
+                        <span id="big-custom-label" style="font-size:11px; font-weight:800; display:none;"></span>
+                        <select class="hidden-picker" onchange="selectBigCustomInterval(this.value)">
+                            <option value="" disabled selected hidden></option>
+                            <option value="8">8 d</option><option value="10">10 d</option><option value="12">12 d</option><option value="14">14 d</option><option value="21">21 d</option><option value="30">30 d</option>
+                        </select>
+                    `;
+                } else {
+                    bead.innerText = i;
+                    bead.onclick = () => {
+                        document.querySelectorAll('.interval-bead-sand').forEach(b => b.classList.remove('selected-orange'));
+                        bead.classList.add('selected-orange');
+                        
+                        document.getElementById('star-icon-id').style.display = 'block';
+                        document.getElementById('big-custom-label').style.display = 'none';
+                        selectedInterval = i;
+                    };
+                }
+                row.appendChild(bead);
+            }
+        }
+
+        function selectBigCustomInterval(val) {
+            document.querySelectorAll('.interval-bead-sand').forEach(b => b.classList.remove('selected-orange'));
+            const starBead = document.getElementById('int-bead-8');
+            starBead.classList.add('selected-orange');
+            
+            document.getElementById('star-icon-id').style.display = 'none';
+            const label = document.getElementById('big-custom-label');
+            label.innerText = val;
+            label.style.display = 'block';
+            
+            selectedInterval = Number(val);
+        }
+
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            const nameInp = document.getElementById('inp-name');
+            
+            plants.push({
+                id: Date.now(),
+                name: nameInp.value,
+                space: currentEditorEnv,
+                room: selectedRoom,
+                interval: selectedInterval,
+                lastWateredDate: todayDateKey
+            });
+
+            saveToStorage();
+            nameInp.value = '';
+            navigateTo('prehled');
+        }
+
+        function render() {
+            renderOverviewGrid();
+            renderCalendarView();
+            updateMapVisualization(getSelectedCalendarDateKey());
+            updateSpaceSwitcherBadges();
+        }
+
+        /* --- PWA & notifikace --- */
+        async function registerServiceWorker() {
+            if (!('serviceWorker' in navigator)) return;
+            try {
+                await navigator.serviceWorker.register('./sw.js');
+                syncPlantsToServiceWorker();
+            } catch (e) { console.warn('SW registrace selhala', e); }
+        }
+
+        async function syncPlantsToServiceWorker() {
+            if (!navigator.serviceWorker?.controller) return;
+            navigator.serviceWorker.controller.postMessage({
+                type: 'SYNC_PLANTS',
+                plants,
+                todayDateKey
+            });
+        }
+
+        function getNotifSettings() {
+            try {
+                return JSON.parse(localStorage.getItem(STORAGE_NOTIF) || '{}');
+            } catch { return {}; }
+        }
+
+        function setNotifSettings(settings) {
+            localStorage.setItem(STORAGE_NOTIF, JSON.stringify(settings));
+        }
+
+        function initInstallBanner() {
+            const banner = document.getElementById('install-banner');
+            const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+            if (banner && !isStandalone && !localStorage.getItem(STORAGE_INSTALL_DISMISS)) {
+                banner.classList.add('visible');
+            }
+        }
+
+        function dismissInstallBanner() {
+            localStorage.setItem(STORAGE_INSTALL_DISMISS, '1');
+            document.getElementById('install-banner')?.classList.remove('visible');
+        }
+
+        function toggleNotifPanel() {
+            document.getElementById('notif-panel')?.classList.toggle('open');
+            document.getElementById('btn-notif')?.classList.toggle('active');
+            updateNotifStatusText();
+        }
+
+        function initNotifUI() {
+            const s = getNotifSettings();
+            const timeInp = document.getElementById('notif-time');
+            if (timeInp && s.hour !== undefined) {
+                timeInp.value = `${String(s.hour).padStart(2,'0')}:${String(s.minute ?? 0).padStart(2,'0')}`;
+            }
+            updateNotifStatusText();
+        }
+
+        function updateNotifStatusText() {
+            const el = document.getElementById('notif-status');
+            if (!el) return;
+            const s = getNotifSettings();
+            if (!s.enabled) {
+                el.textContent = 'Připomínky jsou vypnuté.';
+                el.className = 'notif-status';
+                return;
+            }
+            if (Notification.permission === 'granted') {
+                el.textContent = `Zapnuto — kontrola v ${String(s.hour).padStart(2,'0')}:${String(s.minute ?? 0).padStart(2,'0')} a při otevření appky.`;
+                el.className = 'notif-status';
+            } else if (Notification.permission === 'denied') {
+                el.textContent = 'Oprávnění zablokováno — povolte notifikace v nastavení telefonu.';
+                el.className = 'notif-status warn';
+            } else {
+                el.textContent = 'Čeká se na povolení notifikací.';
+                el.className = 'notif-status warn';
+            }
+        }
+
+        async function enableNotifications() {
+            if (!('Notification' in window)) {
+                alert('Tento prohlížeč nepodporuje notifikace.');
+                return;
+            }
+            const perm = await Notification.requestPermission();
+            if (perm !== 'granted') {
+                updateNotifStatusText();
+                return;
+            }
+            const timeVal = document.getElementById('notif-time')?.value || '08:00';
+            const [h, m] = timeVal.split(':').map(Number);
+            setNotifSettings({ enabled: true, hour: h, minute: m });
+            document.getElementById('btn-notif')?.classList.add('active');
+            await registerServiceWorker();
+            updateNotifStatusText();
+            showWateringNotification(true);
+        }
+
+        function disableNotifications() {
+            setNotifSettings({ enabled: false });
+            document.getElementById('btn-notif')?.classList.remove('active');
+            updateNotifStatusText();
+            if (navigator.clearAppBadge) navigator.clearAppBadge();
+        }
+
+        function buildNotificationBody() {
+            const total = countUnwateredAll(todayDateKey);
+            if (total === 0) return null;
+            const doma = countUnwateredInSpace('doma', todayDateKey);
+            const zahrada = countUnwateredInSpace('zahrada', todayDateKey);
+            const parts = [];
+            if (doma) parts.push(`Doma ${doma}`);
+            if (zahrada) parts.push(`Zahrada ${zahrada}`);
+            return `Dnes zalít ${total} rostlin (${parts.join(', ')})`;
+        }
+
+        function showWateringNotification(forceShow) {
+            const settings = getNotifSettings();
+            if (!settings.enabled || Notification.permission !== 'granted') return;
+            const body = buildNotificationBody();
+            if (!body) {
+                if (navigator.clearAppBadge) navigator.clearAppBadge();
+                return;
+            }
+            const today = todayDateKey;
+            if (!forceShow && localStorage.getItem(STORAGE_LAST_NOTIF) === today) return;
+            const reg = navigator.serviceWorker?.ready;
+            const opts = { body, icon: './icons/icon.svg', badge: './icons/icon.svg', tag: 'water-today' };
+            if (reg) {
+                reg.then(r => r.showNotification('Urban Jungle', opts));
+            } else {
+                new Notification('Urban Jungle', opts);
+            }
+            localStorage.setItem(STORAGE_LAST_NOTIF, today);
+        }
+
+        function checkDailyNotification() {
+            showWateringNotification(false);
+        }
+
+        function maybeFireScheduledNotification() {
+            const settings = getNotifSettings();
+            if (!settings.enabled || Notification.permission !== 'granted') return;
+            const now = new Date();
+            if (now.getHours() < settings.hour) return;
+            if (now.getHours() === settings.hour && now.getMinutes() < (settings.minute ?? 0)) return;
+            showWateringNotification(false);
+            syncPlantsToServiceWorker();
+        }
+
+        function updateAppBadge() {
+            if (!navigator.setAppBadge) return;
+            const n = countUnwateredAll(todayDateKey);
+            if (n > 0) navigator.setAppBadge(n);
+            else if (navigator.clearAppBadge) navigator.clearAppBadge();
+        }
+
+   </script>
+</body>
+</html>
