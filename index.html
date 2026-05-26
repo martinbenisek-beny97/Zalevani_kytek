@@ -31,6 +31,7 @@
             --nav-green: #121a14;
             --orange: var(--accent-warm);
             --water-blue: var(--accent-cyan);
+            --map-highlight: #e8e0d4;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -209,16 +210,24 @@
             width: 100%;
             display: flex;
             justify-content: center;
-            padding: 16px;
+            align-items: center;
+            padding: 20px 16px;
             margin-bottom: 8px;
-            min-height: 240px;
+            min-height: 248px;
             border-radius: var(--radius-lg);
-            background: var(--surface);
-            box-shadow: inset 6px 6px 14px var(--neo-dark), inset -4px -4px 10px var(--neo-light);
+            background: var(--surface-raised);
+            box-shadow: 10px 10px 22px var(--neo-dark), -8px -8px 18px var(--neo-light);
         }
-        .map-container path {
-            stroke: rgba(255, 255, 255, 0.08);
-            stroke-width: 1.5;
+        .map-container {
+            width: 100%;
+            max-width: 250px;
+            display: block;
+            overflow: visible;
+        }
+        .map-room-floor {
+            fill: var(--map-highlight);
+            stroke: none;
+            filter: url(#map-recess-inset);
         }
 
         .plant-grid-2col {
@@ -676,89 +685,116 @@
         .notif-status { font-size: 12px; color: var(--leaf); margin-top: 8px; }
         .notif-status.warn { color: var(--accent-warm); }
 
-        /* --- Úvodní souhrn --- */
+        /* --- Úvodní souhrn (neumorfismus) --- */
         #view-souhrn {
             flex: 1;
             cursor: pointer;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 8px 0 24px;
-            min-height: 58vh;
+            padding: 12px 0 20px;
+            min-height: 55vh;
         }
-        .souhrn-inner { width: 100%; pointer-events: none; }
+        .souhrn-inner {
+            width: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
         .souhrn-label {
-            font-size: 12px;
-            font-weight: 800;
-            letter-spacing: 0.16em;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 28px;
         }
-        .souhrn-droplet-wrap {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 28px;
+        .neo-ring-raised {
+            width: 152px;
+            height: 152px;
             border-radius: 50%;
+            background: var(--bg);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 42px;
-            color: #fff;
-            background: radial-gradient(circle at 35% 30%, #ffbc9e, var(--accent-warm));
-            box-shadow: var(--glow-warm), 8px 10px 24px var(--neo-dark), -4px -4px 12px var(--neo-light);
+            margin-bottom: 22px;
+            box-shadow: 9px 9px 20px var(--neo-dark), -7px -7px 16px var(--neo-light);
         }
-        .souhrn-droplet-wrap.all-done {
-            background: radial-gradient(circle at 35% 30%, #9ecaff, var(--accent-cyan));
-            box-shadow: var(--glow-cyan), 8px 10px 24px var(--neo-dark);
+        .neo-well-sunken {
+            width: 108px;
+            height: 108px;
+            border-radius: 50%;
+            background: var(--bg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 7px 7px 16px var(--neo-dark), inset -5px -5px 12px var(--neo-light);
         }
-        .souhrn-count {
-            font-size: 72px;
+        .neo-well-sunken i {
+            font-size: 22px;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+            opacity: 0.55;
+        }
+        .neo-well-sunken.all-done i { color: var(--leaf); opacity: 0.85; }
+        .souhrn-num-main {
+            font-size: 40px;
             font-weight: 800;
             line-height: 1;
-            letter-spacing: -0.04em;
+            letter-spacing: -0.03em;
             color: var(--text);
-            margin-bottom: 8px;
         }
-        .souhrn-count span { color: var(--accent-warm); }
+        .souhrn-num-main em {
+            font-style: normal;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
+        .souhrn-num-main .alarm { color: var(--accent-warm); }
         .souhrn-sub {
-            font-size: 17px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--text-muted);
-            line-height: 1.45;
+            line-height: 1.4;
             margin-bottom: 28px;
-            padding: 0 12px;
+            max-width: 280px;
         }
-        .souhrn-breakdown {
+        .souhrn-chips {
             display: flex;
-            gap: 14px;
+            gap: 12px;
             justify-content: center;
-            flex-wrap: wrap;
-            margin-bottom: 32px;
+            margin-bottom: 28px;
         }
-        .souhrn-pill {
-            min-width: 130px;
-            padding: 16px 20px;
-            border-radius: var(--radius-lg);
-            background: var(--surface-raised);
-            box-shadow: 6px 6px 14px var(--neo-dark), -4px -4px 10px var(--neo-light);
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-muted);
+        .neo-chip-sunken {
+            min-width: 88px;
+            padding: 14px 12px;
+            border-radius: 18px;
+            background: var(--bg);
+            box-shadow: inset 5px 5px 12px var(--neo-dark), inset -4px -4px 10px var(--neo-light);
         }
-        .souhrn-pill strong {
+        .neo-chip-sunken .chip-label {
             display: block;
-            font-size: 28px;
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+        .neo-chip-sunken .chip-val {
+            font-size: 26px;
             font-weight: 800;
             color: var(--text);
-            margin-top: 6px;
+            line-height: 1;
         }
-        .souhrn-pill strong.warm { color: var(--accent-warm); }
+        .neo-chip-sunken .chip-val.warm { color: var(--accent-warm); }
         .souhrn-hint {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--leaf);
-            opacity: 0.85;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            opacity: 0.75;
         }
         .form-group { margin-bottom: 4px; }
     </style>
@@ -767,6 +803,20 @@
 
     <svg width="0" height="0" style="position: absolute;">
         <defs>
+            <filter id="map-recess-inset" x="-15%" y="-15%" width="130%" height="130%">
+                <feOffset dx="2" dy="2" in="SourceAlpha" result="offset"/>
+                <feGaussianBlur in="offset" stdDeviation="2.5" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="out" result="inverse"/>
+                <feFlood flood-color="#000000" flood-opacity="0.14" result="shade"/>
+                <feComposite in="shade" in2="inverse" operator="in" result="innerShade"/>
+                <feFlood flood-color="#ffffff" flood-opacity="0.55" result="hi"/>
+                <feOffset dx="-1.5" dy="-1.5" in="SourceAlpha" result="offsetHi"/>
+                <feGaussianBlur in="offsetHi" stdDeviation="1.5" result="blurHi"/>
+                <feComposite in="hi" in2="blurHi" operator="out" result="inverseHi"/>
+                <feComposite in="inverseHi" in2="SourceGraphic" operator="out" result="innerHi"/>
+                <feComposite in="innerShade" in2="innerHi" operator="over" result="combined"/>
+                <feComposite in="combined" in2="SourceGraphic" operator="over"/>
+            </filter>
             <clipPath id="clip-souhrn" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.065,0 C 0.095,0 0.095,0.2 0.125,0.2 C 0.155,0.2 0.155,0 0.185,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
             <clipPath id="clip-prehled" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.315,0 C 0.345,0 0.345,0.2 0.375,0.2 C 0.405,0.2 0.405,0 0.435,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
             <clipPath id="clip-kalendar" clipPathUnits="objectBoundingBox"><path d="M 0,0 L 0.565,0 C 0.595,0 0.595,0.2 0.625,0.2 C 0.655,0.2 0.655,0 0.685,0 L 1,0 L 1,1 L 0,1 Z"/></clipPath>
@@ -816,15 +866,29 @@
 
         <div id="view-souhrn" class="page active" onclick="navigateTo('kalendar')" role="button" tabindex="0">
             <div class="souhrn-inner">
-                <p class="souhrn-label">Dnešní zalévání</p>
-                <div class="souhrn-droplet-wrap" id="souhrn-droplet"><i class="fa-solid fa-droplet"></i></div>
-                <div class="souhrn-count" id="souhrn-count-line">—</div>
-                <p class="souhrn-sub" id="souhrn-sub">načítám…</p>
-                <div class="souhrn-breakdown">
-                    <div class="souhrn-pill">Doma<strong id="souhrn-doma" class="warm">0</strong></div>
-                    <div class="souhrn-pill">Zahrada<strong id="souhrn-zahrada" class="warm">0</strong></div>
+                <p class="souhrn-label">Dnes</p>
+                <div class="neo-ring-raised">
+                    <div class="neo-well-sunken" id="souhrn-well">
+                        <i class="fa-solid fa-droplet"></i>
+                        <div class="souhrn-num-main" id="souhrn-count-line">—</div>
+                    </div>
                 </div>
-                <p class="souhrn-hint">Klepni kamkoliv pro plán zalévání →</p>
+                <p class="souhrn-sub" id="souhrn-sub">načítám…</p>
+                <div class="souhrn-chips">
+                    <div class="neo-chip-sunken">
+                        <span class="chip-label">Doma</span>
+                        <span class="chip-val warm" id="souhrn-doma">0</span>
+                    </div>
+                    <div class="neo-chip-sunken">
+                        <span class="chip-label">Celkem</span>
+                        <span class="chip-val" id="souhrn-total">0</span>
+                    </div>
+                    <div class="neo-chip-sunken">
+                        <span class="chip-label">Zahrada</span>
+                        <span class="chip-val warm" id="souhrn-zahrada">0</span>
+                    </div>
+                </div>
+                <p class="souhrn-hint">Klepni pro plán zalévání</p>
             </div>
         </div>
 
@@ -840,13 +904,13 @@
             
 <div id="maps-wrapper">
     
-    <svg id="map-doma" class="map-container" viewBox="-10 -10 220 220" style="width:100%; max-width:250px; margin: 20px auto; display:block; overflow: visible;">
+    <svg id="map-doma" class="map-container" viewBox="-10 -10 220 220">
         <defs>
             <filter id="drop-shadow-doma" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.25"/>
             </filter>
         </defs>
-        <path d="M10,10 H190 V100 H110 V190 H10 Z" fill="none" stroke="#e0dcd5" stroke-width="2"/>
+        <path class="map-room-floor" d="M10,10 H190 V100 H110 V190 H10 Z"/>
         <circle id="map-okno-kuchyne" class="svg-spot" cx="150" cy="12" r="12" filter="url(#drop-shadow-doma)"/>
         <circle id="map-nad-terarkem" class="svg-spot" cx="180" cy="50" r="12" filter="url(#drop-shadow-doma)"/>
         <circle id="map-zaves-u-okna" class="svg-spot" cx="50" cy="40" r="12" filter="url(#drop-shadow-doma)"/>
@@ -855,13 +919,13 @@
         <circle id="map-venku-za-oknem" class="svg-spot" cx="110" cy="130" r="12" filter="url(#drop-shadow-doma)"/>
     </svg>
 
-    <svg id="map-zahrada" class="map-container" viewBox="-10 -10 220 220" style="width:100%; max-width:250px; margin: 20px auto; display:none; overflow: visible;">
+    <svg id="map-zahrada" class="map-container" viewBox="-10 -10 220 220" style="display:none">
         <defs>
             <filter id="drop-shadow-zahrada" x="-50%" y="-50%" width="200%" height="200%">
-                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+                <feDropShadow dx="2" dy="2" stdDeviation="3" flood-opacity="0.25"/>
             </filter>
         </defs>
-        <path d="M20,20 H180 V180 H20 Z" fill="none" stroke="#e0dcd5" stroke-width="2"/>
+        <path class="map-room-floor" d="M20,20 H180 V180 H20 Z"/>
         <circle id="map-sklenik" class="svg-spot" cx="60" cy="60" r="15" filter="url(#drop-shadow-zahrada)"/>
         <circle id="map-zahon" class="svg-spot" cx="140" cy="60" r="15" filter="url(#drop-shadow-zahrada)"/>
         <circle id="map-terasa" class="svg-spot" cx="100" cy="140" r="15" filter="url(#drop-shadow-zahrada)"/>
@@ -1173,31 +1237,30 @@ function applyStates(targetDateKey, mapping) {
             const alarm = countUnwateredAll(todayDateKey);
             const doma = countUnwateredInSpace('doma', todayDateKey);
             const zahrada = countUnwateredInSpace('zahrada', todayDateKey);
-            const droplet = document.getElementById('souhrn-droplet');
+            const well = document.getElementById('souhrn-well');
             const countLine = document.getElementById('souhrn-count-line');
             const sub = document.getElementById('souhrn-sub');
 
             document.getElementById('souhrn-doma').textContent = doma;
             document.getElementById('souhrn-zahrada').textContent = zahrada;
+            document.getElementById('souhrn-total').textContent = total;
             document.getElementById('souhrn-doma').classList.toggle('warm', doma > 0);
             document.getElementById('souhrn-zahrada').classList.toggle('warm', zahrada > 0);
 
             if (total === 0) {
                 countLine.innerHTML = '0';
-                sub.textContent = 'Zatím žádné rostliny — přidej první přes +';
-                droplet?.classList.add('all-done');
+                sub.textContent = 'Přidej první rostlinu přes +';
+                well?.classList.add('all-done');
                 return;
             }
             if (alarm === 0) {
-                countLine.innerHTML = '<span style="color:var(--accent-cyan)">0</span>';
-                sub.textContent = `Všech ${total} rostlin je dnes zalito — paráda!`;
-                droplet?.classList.add('all-done');
+                countLine.innerHTML = '0<em>/' + total + '</em>';
+                sub.textContent = 'Všechno je dnes zalito';
+                well?.classList.add('all-done');
             } else {
-                countLine.innerHTML = `<span>${alarm}</span> / ${total}`;
-                sub.textContent = alarm === 1
-                    ? 'rostlina dnes čeká na zalití'
-                    : 'rostlin dnes čeká na zalití';
-                droplet?.classList.remove('all-done');
+                countLine.innerHTML = '<span class="alarm">' + alarm + '</span><em>/' + total + '</em>';
+                sub.textContent = alarm === 1 ? 'k zalití dnes' : 'k zalití dnes';
+                well?.classList.remove('all-done');
             }
         }
 
